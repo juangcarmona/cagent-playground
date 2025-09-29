@@ -1,0 +1,14 @@
+version: "2"
+agents:
+  root:
+    model: gpt-oss
+    description: A simple local assistant
+    instruction: |
+      You are a helpful AI assistant. Answer concisely and clearly.
+
+models:
+  gpt-oss:
+    provider: dmr # needs to be "dmr" for local models
+    model: ai/gpt-oss   # NOTE: be sure you pick one from `docker model ls`
+    base_url: http://localhost:12434/engines/llama.cpp/v1
+    # use http://model-runner.docker.internal/engines/v1 if you run cagent from a container
