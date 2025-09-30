@@ -1,11 +1,11 @@
 param(
-  [Parameter(Mandatory=$true)][string]$AgentName,
-  [string]$NoTty
+  [Parameter(Mandatory = $true)][string]$AgentName,
+  [switch]$NoTty
 )
 
-$repoRoot = Split-Path -Parent $MyInvocation.MyCommand.Path
-$agentFile = Join-Path $repoRoot "agents\$AgentName\agent.yaml"
-$envFile   = Join-Path $repoRoot ".env"
+$repoRoot   = Split-Path -Parent $MyInvocation.MyCommand.Path
+$agentFile  = Join-Path $repoRoot "agents\$AgentName\agent.yaml"
+$envFile    = Join-Path $repoRoot ".env"
 
 if (-not (Test-Path $agentFile)) {
   Write-Host "Agent not found: $agentFile"
@@ -14,10 +14,17 @@ if (-not (Test-Path $agentFile)) {
 
 Write-Host "Running agent: $AgentName"
 
+# build arguments for cagent
+$cagentArgs = @("run", $agentFile)
+
 if (Test-Path $envFile) {
-  & cagent run $agentFile "--env-from-file=$envFile" $NoTty
+  $cagentArgs += @("--env-from-file", $envFile)
 } else {
-  # fallback to dummy key so it always runs
   [System.Environment]::SetEnvironmentVariable('OPENAI_API_KEY','dummy','Process')
-  & cagent run $agentFile $NoTty
 }
+
+if ($NoTty) {
+  $cagentArgs += "--no-tty"
+}
+
+& cagent @cagentArgs

@@ -7,7 +7,13 @@ if [ $# -lt 1 ]; then
 fi
 
 AGENT_NAME="$1"
-NO_TTY_FLAG="${2:-}"
+shift
+
+NO_TTY=false
+if [ "${1:-}" = "--no-tty" ]; then
+  NO_TTY=true
+  shift
+fi
 
 REPO_ROOT="$(cd "$(dirname "$0")" && pwd)"
 AGENT_FILE="$REPO_ROOT/agents/$AGENT_NAME/agent.yaml"
@@ -20,8 +26,17 @@ fi
 
 echo "Running agent: $AGENT_NAME"
 
+# build args
+cagent_args=( run "$AGENT_FILE" )
+
 if [ -f "$ENV_FILE" ]; then
-  exec cagent run "$AGENT_FILE" --env-from-file "$ENV_FILE" $NO_TTY_FLAG
+  cagent_args+=( --env-from-file "$ENV_FILE" )
 else
-  OPENAI_API_KEY=dummy exec cagent run "$AGENT_FILE" $NO_TTY_FLAG
+  export OPENAI_API_KEY=dummy
 fi
+
+if [ "$NO_TTY" = true ]; then
+  cagent_args+=( --no-tty )
+fi
+
+exec cagent "${cagent_args[@]}"

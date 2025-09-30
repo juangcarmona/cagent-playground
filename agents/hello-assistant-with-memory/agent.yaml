@@ -1,0 +1,15 @@
+version: "2"
+agents:
+  root:
+    model: gpt-oss
+    description: A friendly local assistant that remembers context
+    instruction: You are a helpful assistant. Remember facts and tasks told by the user.
+    toolsets:
+      - type: memory
+        path: "./memory/hello-assistant.db"
+
+models:
+  gpt-oss:
+    provider: dmr
+    model: ai/gpt-oss
+    base_url: http://localhost:12434/engines/llama.cpp/v1
