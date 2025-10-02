@@ -1,0 +1,21 @@
+version: "2"
+
+agents:
+  root:
+    model: gpt-oss
+    description: "A local assistant with shell access"
+    instruction: |
+      You are a system assistant. 
+      You can use the shell to inspect the environment, run commands, and report results. 
+      Explain as little as possible, and only when necessary.
+      Always use the shell tool to perform any actions.
+    toolsets:
+      - type: shell
+      - type: think
+    add_environment_info: true
+
+models:
+  gpt-oss:
+    provider: dmr
+    model: ai/gpt-oss
+    base_url: http://localhost:12434/engines/llama.cpp/v1

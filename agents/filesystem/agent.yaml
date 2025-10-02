@@ -1,0 +1,20 @@
+version: "2"
+
+agents:
+  root:
+    model: gpt-oss
+    description: "An assistant that can read and write files"
+    instruction: |
+      You are a file management assistant.
+      You can open, read, and write files in the local filesystem.
+      Use this power carefully: never delete files unless explicitly instructed.
+    toolsets:
+      - type: filesystem
+      - type: think
+    add_environment_info: true
+
+models:
+  gpt-oss:
+    provider: dmr
+    model: ai/gpt-oss
+    base_url: http://localhost:12434/engines/llama.cpp/v1
